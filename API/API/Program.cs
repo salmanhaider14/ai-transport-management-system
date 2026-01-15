@@ -1,11 +1,21 @@
+using System.Text.Json.Serialization;
 using API.Data;
+using API.Features.Bus;
 using API.Features.Identity;
+using API.Features.Routes;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
@@ -20,10 +30,13 @@ if (string.IsNullOrEmpty(connectionString))
 }
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseNpgsql(connectionString));
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
 
 var app = builder.Build();
 
 app.MapGroup("/auth").MapIdentityApiEndpoints<IdentityUser>();
+app.MapBusEndpoints();
+app.MapRouteEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -33,6 +46,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())
 {
