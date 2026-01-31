@@ -12,6 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Route> Routes => Set<Route>();
     public DbSet<RouteStop> RouteStops => Set<RouteStop>();
     public DbSet<DriverProfile> DriverProfiles => Set<DriverProfile>();
+    public DbSet<DriverAttendance> DriverAttendances => Set<DriverAttendance>();
     public DbSet<BusAssignment> BusAssignments => Set<BusAssignment>();
     public DbSet<LocationUpdate> LocationUpdates => Set<LocationUpdate>();
 
@@ -22,10 +23,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         // =============================
         // Bus
         // =============================
-        builder.Entity<Bus>(entity =>
-        {
-            entity.HasIndex(b => b.BusNumber).IsUnique();
-        });
+        builder.Entity<Bus>(entity => { entity.HasIndex(b => b.BusNumber).IsUnique(); });
 
         // =============================
         // Route
@@ -33,9 +31,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         builder.Entity<Route>(entity =>
         {
             entity.HasMany(r => r.Stops)
-                  .WithOne(s => s.Route)
-                  .HasForeignKey(s => s.RouteId)
-                  .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(s => s.Route)
+                .HasForeignKey(s => s.RouteId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // =============================
@@ -44,7 +42,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         builder.Entity<RouteStop>(entity =>
         {
             entity.HasIndex(s => new { s.RouteId, s.StopOrder })
-                  .IsUnique();
+                .IsUnique();
         });
 
         // =============================
@@ -54,11 +52,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         {
             entity.HasIndex(d => d.UserId).IsUnique();
 
-            entity.HasOne<IdentityUser>()
-                  .WithOne()
-                  .HasForeignKey<DriverProfile>(d => d.UserId)
-                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(d => d.User)
+                .WithOne()
+                .HasForeignKey<DriverProfile>(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
+        builder.Entity<DriverAttendance>()
+            .HasIndex(a => new { a.DriverProfileId, a.Date })
+            .IsUnique();
+
 
         // =============================
         // BusAssignment
@@ -68,19 +70,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(a => new { a.BusId, a.ServiceDate, a.StartTime });
 
             entity.HasOne(a => a.Bus)
-                  .WithMany(b => b.BusAssignments)
-                  .HasForeignKey(a => a.BusId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(b => b.BusAssignments)
+                .HasForeignKey(a => a.BusId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(a => a.Route)
-                  .WithMany(r => r.BusAssignments)
-                  .HasForeignKey(a => a.RouteId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(r => r.BusAssignments)
+                .HasForeignKey(a => a.RouteId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(a => a.DriverProfile)
-                  .WithMany(d => d.BusAssignments)
-                  .HasForeignKey(a => a.DriverProfileId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(d => d.BusAssignments)
+                .HasForeignKey(a => a.DriverProfileId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // =============================
@@ -92,9 +94,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(l => l.Timestamp);
 
             entity.HasOne(l => l.BusAssignment)
-                  .WithMany()
-                  .HasForeignKey(l => l.BusAssignmentId)
-                  .OnDelete(DeleteBehavior.Cascade);
+                .WithMany()
+                .HasForeignKey(l => l.BusAssignmentId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
+
+
     }
 }

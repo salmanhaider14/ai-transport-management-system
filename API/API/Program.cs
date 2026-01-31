@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using API.Data;
 using API.Features.Bus;
+using API.Features.Driver;
 using API.Features.Identity;
 using API.Features.Routes;
 using FluentValidation;
@@ -15,6 +16,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
 builder.Services.AddAuthorization();
@@ -37,6 +39,7 @@ var app = builder.Build();
 app.MapGroup("/auth").MapIdentityApiEndpoints<IdentityUser>();
 app.MapBusEndpoints();
 app.MapRouteEndpoints();
+app.MapDriverEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
