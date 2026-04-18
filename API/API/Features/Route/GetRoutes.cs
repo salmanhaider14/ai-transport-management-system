@@ -12,6 +12,7 @@ public static class GetRoutes
         CancellationToken ct)
     {
         var routes = await db.Routes
+            .Include(r => r.Stops)
             .AsNoTracking()
             .OrderBy(r => r.Name)
             .ToListAsync(ct);

@@ -14,6 +14,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<DriverProfile> DriverProfiles => Set<DriverProfile>();
     public DbSet<DriverAttendance> DriverAttendances => Set<DriverAttendance>();
     public DbSet<BusAssignment> BusAssignments => Set<BusAssignment>();
+    public DbSet<TimeSlot> TimeSlots => Set<TimeSlot>(); // Add this line
     public DbSet<LocationUpdate> LocationUpdates => Set<LocationUpdate>();
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -67,7 +68,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         // =============================
         builder.Entity<BusAssignment>(entity =>
         {
-            entity.HasIndex(a => new { a.BusId, a.ServiceDate, a.StartTime });
+            entity.HasIndex(a => new { a.BusId, a.ServiceDate, a.Status });
+            entity.HasIndex(a => new { a.DriverProfileId, a.ServiceDate });
+            entity.HasIndex(a => a.ServiceDate);
+            entity.HasIndex(a => a.Status);
 
             entity.HasOne(a => a.Bus)
                 .WithMany(b => b.BusAssignments)
@@ -86,19 +90,33 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         });
 
         // =============================
-        // LocationUpdate
+        // TimeSlot
         // =============================
-        builder.Entity<LocationUpdate>(entity =>
+        builder.Entity<TimeSlot>(entity =>
         {
-            entity.HasIndex(l => l.BusAssignmentId);
-            entity.HasIndex(l => l.Timestamp);
+            entity.HasIndex(t => new { t.BusAssignmentId, t.SlotNumber }).IsUnique();
+            entity.HasIndex(t => t.Status);
+            entity.HasIndex(t => t.StartTime);
+            entity.HasIndex(t => new { t.BusAssignmentId, t.StartTime });
 
-            entity.HasOne(l => l.BusAssignment)
-                .WithMany()
-                .HasForeignKey(l => l.BusAssignmentId)
+            entity.HasOne(t => t.BusAssignment)
+                .WithMany(a => a.TimeSlots)
+                .HasForeignKey(t => t.BusAssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+        // =============================
+            // LocationUpdate
+            // =============================
 
+            builder.Entity<LocationUpdate>(entity =>
+            {
+                entity.HasIndex(l => l.BusAssignmentId);
+                entity.HasIndex(l => l.Timestamp);
 
+                entity.HasOne(l => l.BusAssignment)
+                    .WithMany(a => a.LocationUpdates)  // ← Add this reference!
+                    .HasForeignKey(l => l.BusAssignmentId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
     }
 }

@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using API.Data;
 using API.Features.Bus;
+using API.Features.BusAssignment;
 using API.Features.Driver;
 using API.Features.Identity;
 using API.Features.Routes;
@@ -33,6 +34,22 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseNpgsql(connectionString));
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowCredentials() // ✅ Critical for cookies
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+});
 
 var app = builder.Build();
 
@@ -40,6 +57,8 @@ app.MapGroup("/auth").MapIdentityApiEndpoints<IdentityUser>();
 app.MapBusEndpoints();
 app.MapRouteEndpoints();
 app.MapDriverEndpoints();
+app.MapBusAssignmentEndpoints();
+app.MapTimeSlotEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -47,7 +66,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
-
+app.UseCors("ReactApp");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

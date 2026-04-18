@@ -251,6 +251,12 @@ public static class IdentityApiEndpointRouteBuilderExtensions
 
             return TypedResults.Ok();
         });
+        
+         routeGroup.MapPost("/logout", async (SignInManager<TUser> signInManager) =>
+            {
+                await signInManager.SignOutAsync();
+                return Results.Ok();
+            });
 
         var accountGroup = routeGroup.MapGroup("/manage").RequireAuthorization();
 
@@ -450,6 +456,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
 
         return TypedResults.ValidationProblem(errorDictionary);
     }
+   
 
     private static async Task<ExtendedInfoResponse> CreateInfoResponseAsync<TUser>(TUser user, UserManager<TUser> userManager)
         where TUser : class

@@ -62,28 +62,26 @@ namespace API.Migrations
                     b.Property<int>("DriverProfileId")
                         .HasColumnType("integer");
 
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time without time zone");
-
                     b.Property<int>("RouteId")
                         .HasColumnType("integer");
 
                     b.Property<DateOnly>("ServiceDate")
                         .HasColumnType("date");
 
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time without time zone");
-
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DriverProfileId");
-
                     b.HasIndex("RouteId");
 
-                    b.HasIndex("BusId", "ServiceDate", "StartTime");
+                    b.HasIndex("ServiceDate");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("DriverProfileId", "ServiceDate");
+
+                    b.HasIndex("BusId", "ServiceDate", "Status");
 
                     b.ToTable("BusAssignments");
                 });
@@ -244,6 +242,52 @@ namespace API.Migrations
                         .IsUnique();
 
                     b.ToTable("RouteStops");
+                });
+
+            modelBuilder.Entity("API.Features.Entities.TimeSlot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<TimeOnly?>("ActualEndTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<TimeOnly?>("ActualStartTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<int>("BusAssignmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SlotNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StartTime");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("BusAssignmentId", "SlotNumber")
+                        .IsUnique();
+
+                    b.HasIndex("BusAssignmentId", "StartTime");
+
+                    b.ToTable("TimeSlots");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -494,7 +538,7 @@ namespace API.Migrations
             modelBuilder.Entity("API.Features.Entities.LocationUpdate", b =>
                 {
                     b.HasOne("API.Features.Entities.BusAssignment", "BusAssignment")
-                        .WithMany()
+                        .WithMany("LocationUpdates")
                         .HasForeignKey("BusAssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -511,6 +555,17 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("Route");
+                });
+
+            modelBuilder.Entity("API.Features.Entities.TimeSlot", b =>
+                {
+                    b.HasOne("API.Features.Entities.BusAssignment", "BusAssignment")
+                        .WithMany("TimeSlots")
+                        .HasForeignKey("BusAssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BusAssignment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -567,6 +622,13 @@ namespace API.Migrations
             modelBuilder.Entity("API.Features.Entities.Bus", b =>
                 {
                     b.Navigation("BusAssignments");
+                });
+
+            modelBuilder.Entity("API.Features.Entities.BusAssignment", b =>
+                {
+                    b.Navigation("LocationUpdates");
+
+                    b.Navigation("TimeSlots");
                 });
 
             modelBuilder.Entity("API.Features.Entities.DriverProfile", b =>
