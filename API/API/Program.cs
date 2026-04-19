@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using API.Data;
 using API.Features.Bus;
 using API.Features.BusAssignment;
+using API.Features.Dashboard;
 using API.Features.Driver;
 using API.Features.Identity;
 using API.Features.Routes;
@@ -59,6 +60,7 @@ app.MapRouteEndpoints();
 app.MapDriverEndpoints();
 app.MapBusAssignmentEndpoints();
 app.MapTimeSlotEndpoints();
+app.MapDashboardEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

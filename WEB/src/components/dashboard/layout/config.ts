@@ -7,7 +7,12 @@ export const navItems = [
 	{ key: "routes", title: "Routes", href: paths.dashboard.routes, icon: "road-horizon" },
 	{ key: "drivers", title: "Drivers", href: paths.dashboard.drivers, icon: "user-rectangle" },
 	{ key: "bus_assignments", title: "Bus Assignments", href: paths.dashboard.bus_assignments, icon: "clipboard-text" },
-	{ key: "customers", title: "Customers", href: paths.dashboard.customers, icon: "users" },
+	{
+		key: "drivers_attendance",
+		title: "Drivers Attendance",
+		href: paths.dashboard.drivers_attendance,
+		icon: "user-check",
+	},
 	{ key: "integrations", title: "Integrations", href: paths.dashboard.integrations, icon: "plugs-connected" },
 	{ key: "settings", title: "Settings", href: paths.dashboard.settings, icon: "gear-six" },
 	{ key: "account", title: "Account", href: paths.dashboard.account, icon: "user" },

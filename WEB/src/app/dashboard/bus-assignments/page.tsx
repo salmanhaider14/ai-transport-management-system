@@ -205,10 +205,26 @@ export default function AssignmentsPage() {
 			setEditDialogOpen(false);
 			fetchAssignments();
 		} catch (err: any) {
-			if (err.message?.includes("already assigned")) {
-				setEditError("root", { message: err.message });
+			// ✅ Same pattern as Drivers page
+			if (err.errors) {
+				Object.entries(err.errors).forEach(([field, messages]) => {
+					const formField = field.charAt(0).toLowerCase() + field.slice(1);
+
+					setEditError(formField as any, {
+						type: "server",
+						message: Array.isArray(messages) ? messages[0] : String(messages),
+					});
+				});
+
+				if (!Object.keys(err.errors).length) {
+					setEditError("root", {
+						message: err.message || "Validation failed",
+					});
+				}
 			} else {
-				setEditError("root", { message: err.message || "Failed to update assignment" });
+				setEditError("root", {
+					message: err.message || "Failed to update assignment",
+				});
 			}
 		} finally {
 			setEditSubmitting(false);
@@ -464,10 +480,26 @@ export default function AssignmentsPage() {
 			setCreateDialogOpen(false);
 			fetchAssignments();
 		} catch (err: any) {
-			if (err.message?.includes("already assigned")) {
-				setFormError("root", { message: err.message });
+			// ✅ Same pattern as Drivers page
+			if (err.errors) {
+				Object.entries(err.errors).forEach(([field, messages]) => {
+					const formField = field.charAt(0).toLowerCase() + field.slice(1);
+
+					setFormError(formField as keyof CreateAssignmentFormData, {
+						type: "server",
+						message: Array.isArray(messages) ? messages[0] : String(messages),
+					});
+				});
+
+				if (!Object.keys(err.errors).length) {
+					setFormError("root", {
+						message: err.message || "Validation failed",
+					});
+				}
 			} else {
-				setFormError("root", { message: err.message || "Failed to create assignment" });
+				setFormError("root", {
+					message: err.message || "Failed to create assignment",
+				});
 			}
 		} finally {
 			setSubmitting(false);
