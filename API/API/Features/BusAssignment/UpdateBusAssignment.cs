@@ -69,36 +69,57 @@ public static class UpdateBusAssignment
             var newDriverId = command.DriverProfileId ?? assignment.DriverProfileId;
             var newDate = command.ServiceDate ?? assignment.ServiceDate;
 
-            // Check bus conflicts
-            if (newBusId != assignment.BusId || newDate != assignment.ServiceDate)
-            {
-                var busConflicts = await db.BusAssignments
-                    .Include(a => a.TimeSlots)
-                    .Where(a => a.BusId == newBusId && a.ServiceDate == newDate && a.Id != id)
-                    .Where(a => a.Status != AssignmentStatus.Cancelled && a.Status != AssignmentStatus.Completed)
-                    .SelectMany(a => a.TimeSlots)
-                    .AnyAsync(ts => assignment.TimeSlots.Any(aSlot =>
-                        (aSlot.StartTime < ts.EndTime && aSlot.EndTime > ts.StartTime)), ct);
-
-                if (busConflicts)
-                    return TypedResults.Conflict($"Bus is already assigned during one or more time slots on {newDate:yyyy-MM-dd}.");
-            }
-
+           // Check bus conflicts
+           if (newBusId != assignment.BusId || newDate != assignment.ServiceDate)
+           {
+               var existingBusSlots = await db.BusAssignments
+                   .Where(a => a.BusId == newBusId &&
+                               a.ServiceDate == newDate &&
+                               a.Id != id &&
+                               a.Status != AssignmentStatus.Cancelled &&
+                               a.Status != AssignmentStatus.Completed)
+                   .SelectMany(a => a.TimeSlots)
+                   .ToListAsync(ct);
+           
+               var busConflicts = existingBusSlots.Any(ts =>
+                   assignment.TimeSlots.Any(aSlot =>
+                       aSlot.StartTime < ts.EndTime &&
+                       aSlot.EndTime > ts.StartTime));
+           
+               if (busConflicts)
+               {
+                   return TypedResults.Conflict(
+                       $"Bus is already assigned during one or more time slots on {newDate:yyyy-MM-dd}."
+                   );
+               }
+           }
             // Check driver conflicts
             if (newDriverId != assignment.DriverProfileId || newDate != assignment.ServiceDate)
             {
-                var driverConflicts = await db.BusAssignments
-                    .Include(a => a.TimeSlots)
-                    .Where(a => a.DriverProfileId == newDriverId && a.ServiceDate == newDate && a.Id != id)
-                    .Where(a => a.Status != AssignmentStatus.Cancelled && a.Status != AssignmentStatus.Completed)
+                var existingDriverSlots = await db.BusAssignments
+                    .Where(a => a.DriverProfileId == newDriverId &&
+                                a.ServiceDate == newDate &&
+                                a.Id != id &&
+                                a.Status != AssignmentStatus.Cancelled &&
+                                a.Status != AssignmentStatus.Completed)
                     .SelectMany(a => a.TimeSlots)
-                    .AnyAsync(ts => assignment.TimeSlots.Any(aSlot =>
-                        (aSlot.StartTime < ts.EndTime && aSlot.EndTime > ts.StartTime)), ct);
-
+                    .ToListAsync(ct);
+            
+                var driverConflicts = existingDriverSlots.Any(ts =>
+                    assignment.TimeSlots.Any(aSlot =>
+                        aSlot.StartTime < ts.EndTime &&
+                        aSlot.EndTime > ts.StartTime));
+            
                 if (driverConflicts)
-                    return TypedResults.Conflict($"Driver is already assigned during one or more time slots on {newDate:yyyy-MM-dd}.");
+                {
+                    return TypedResults.Conflict(
+                        $"Driver is already assigned during one or more time slots on {newDate:yyyy-MM-dd}."
+                    );
+                }
             }
         }
+        
+        
 
         // Update fields
         var updated = false;

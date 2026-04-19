@@ -1,5 +1,5 @@
 import type { Icon } from "@phosphor-icons/react/dist/lib/types";
-import { BusIcon, RoadHorizonIcon } from "@phosphor-icons/react/dist/ssr";
+import { BusIcon, ClipboardTextIcon, RoadHorizonIcon, UserRectangleIcon } from "@phosphor-icons/react/dist/ssr";
 import { ChartPieIcon } from "@phosphor-icons/react/dist/ssr/ChartPie";
 import { GearSixIcon } from "@phosphor-icons/react/dist/ssr/GearSix";
 import { PlugsConnectedIcon } from "@phosphor-icons/react/dist/ssr/PlugsConnected";
@@ -16,4 +16,6 @@ export const navIcons = {
 	users: UsersIcon,
 	bus: BusIcon,
 	"road-horizon": RoadHorizonIcon,
+	"user-rectangle": UserRectangleIcon,
+	"clipboard-text": ClipboardTextIcon,
 } as Record<string, Icon>;

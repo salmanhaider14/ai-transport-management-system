@@ -51,18 +51,38 @@ public class BusAssignment
             Status = AssignmentStatus.Draft;
             return;
         }
-            
+    
         var allCancelled = TimeSlots.All(t => t.Status == TimeSlotStatus.Cancelled);
-        var allCompleted = TimeSlots.All(t => t.Status == TimeSlotStatus.Completed);
+    
+        var allFinished = TimeSlots.All(t =>
+            t.Status == TimeSlotStatus.Completed ||
+            t.Status == TimeSlotStatus.Cancelled ||
+            t.Status == TimeSlotStatus.Skipped);
+    
+        var allCompletedOrCancelled = TimeSlots.All(t =>
+            t.Status == TimeSlotStatus.Completed ||
+            t.Status == TimeSlotStatus.Cancelled);
+    
         var anyInProgress = TimeSlots.Any(t => t.Status == TimeSlotStatus.InProgress);
+    
         var anyCompleted = TimeSlots.Any(t => t.Status == TimeSlotStatus.Completed);
+    
+        var anyFinished = TimeSlots.Any(t =>
+            t.Status == TimeSlotStatus.Completed ||
+            t.Status == TimeSlotStatus.Cancelled ||
+            t.Status == TimeSlotStatus.Skipped);
+    
         var anyScheduled = TimeSlots.Any(t => t.Status == TimeSlotStatus.Scheduled);
-            
+    
         if (allCancelled)
         {
             Status = AssignmentStatus.Cancelled;
         }
-        else if (allCompleted)
+        else if (allCompletedOrCancelled)
+        {
+            Status = AssignmentStatus.Completed;
+        }
+        else if (allFinished)
         {
             Status = AssignmentStatus.Completed;
         }
@@ -70,7 +90,7 @@ public class BusAssignment
         {
             Status = AssignmentStatus.InProgress;
         }
-        else if (anyCompleted && anyScheduled)
+        else if (anyFinished && anyScheduled)
         {
             Status = AssignmentStatus.PartiallyCompleted;
         }
@@ -84,6 +104,8 @@ public class BusAssignment
         }
     }
 }
+
+
 
 public class TimeSlot
 {

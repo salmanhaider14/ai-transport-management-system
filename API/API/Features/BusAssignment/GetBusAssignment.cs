@@ -36,15 +36,15 @@ public static class GetBusAssignment
             assignment.TotalSlots,
             assignment.CompletedSlots,
             assignment.TimeSlots.Select(ts => new TimeSlotResponse(
-                ts.Id,
-                assignment.BusId,
-                ts.SlotNumber,
-                ts.StartTime,
-                ts.EndTime,
-                ts.Status,
-                ts.ActualStartTime,
-                ts.ActualEndTime,
-                ts.Notes
+                ts.Id,                     // 1st: Id ✓
+                ts.SlotNumber,             // 2nd: SlotNumber ✓
+                ts.BusAssignmentId,        // 3rd: BusAssignmentId ✓
+                ts.StartTime,              // 4th: StartTime ✓
+                ts.EndTime,                // 5th: EndTime ✓
+                ts.Status,                 // 6th: Status ✓
+                ts.ActualStartTime,        // 7th: ActualStartTime ✓
+                ts.ActualEndTime,          // 8th: ActualEndTime ✓
+                ts.Notes                   // 9th: Notes ✓
             )).ToList()
         );
 
