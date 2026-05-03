@@ -36,5 +36,5 @@ public static class GetDriverProfiles
     internal static void MapGetDriverProfiles(this IEndpointRouteBuilder app) =>
         app.MapGet("/", Handler)
             .WithSummary("Get all driver profiles")
-            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin));
+            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin, AppRoles.Driver));
 }

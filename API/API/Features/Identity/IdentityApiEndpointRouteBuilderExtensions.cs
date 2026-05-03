@@ -463,6 +463,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
     {
         return new()
         {
+            UserId = await userManager.GetUserIdAsync(user), 
             Email = await userManager.GetEmailAsync(user) ?? throw new NotSupportedException("Users must have an email."),
             IsEmailConfirmed = await userManager.IsEmailConfirmedAsync(user),
             Roles = await userManager.GetRolesAsync(user),
@@ -498,6 +499,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
     
     public class ExtendedInfoResponse
     {
+         public string UserId { get; set; } = string.Empty;  // ← Add this
         public string Email { get; set; } = string.Empty;
         public bool IsEmailConfirmed { get; set; }
         public IList<string> Roles { get; set; } = Array.Empty<string>();

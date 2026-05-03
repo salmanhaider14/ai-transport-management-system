@@ -8,8 +8,7 @@ public static class DriverEndpoints
     public static void MapDriverEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/drivers")
-            .WithTags("Drivers")
-            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin));
+            .WithTags("Drivers");
         
         group.MapCreateDriverProfile();
         group.MapUpdateDriverProfile();

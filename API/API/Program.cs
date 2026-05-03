@@ -35,16 +35,17 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseNpgsql(connectionString));
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("ReactApp", policy =>
+    builder.Services.AddCors(options =>
     {
-        policy.WithOrigins("http://localhost:3000")
-              .AllowCredentials() // ✅ Critical for cookies
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        options.AddPolicy("Development", policy =>
+        {
+            policy.SetIsOriginAllowed(_ => true)  // Allows any origin
+                  .AllowCredentials()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
     });
-});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
@@ -69,7 +70,7 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 app.UseCors("ReactApp");
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
