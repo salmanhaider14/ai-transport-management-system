@@ -165,5 +165,5 @@ public static class UpdateTimeSlot
     internal static void MapUpdateTimeSlot(this IEndpointRouteBuilder app) =>
         app.MapPut("/{assignmentId:int}/slots/{slotId:int}", Handler)
             .WithSummary("Update a time slot")
-            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin));
+            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin, AppRoles.Driver));
 }

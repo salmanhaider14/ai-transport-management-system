@@ -195,5 +195,5 @@ public static class UpdateBusAssignment
     internal static void MapUpdateBusAssignment(this IEndpointRouteBuilder app) =>
         app.MapPut("/{id:int}", Handler)
             .WithSummary("Update a bus assignment")
-            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin));
+            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin, AppRoles.Driver));
 }

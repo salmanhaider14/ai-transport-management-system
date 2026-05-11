@@ -74,6 +74,7 @@ export default function AssignmentDetailScreen() {
     try {
       const data = await apiClient.get<Assignment>(`/assignments/${id}`);
       setAssignment(data);
+      console.log("Assignment data:", data);
     } catch (error) {
       console.error("Failed to fetch assignment", error);
       Alert.alert("Error", "Failed to load assignment details");
@@ -93,19 +94,28 @@ export default function AssignmentDetailScreen() {
 
     setUpdatingStatus(true);
     try {
-      await apiClient.put(`/assignments/${assignment.id}`, {
-        status: "InProgress",
-      });
+      //   await apiClient.put(`/assignments/${assignment.id}`, {
+      //     status: "InProgress",
+      //   });
       await startLocationTracking({
         assignmentId: assignment.id,
         intervalSeconds: 15,
         onError: (error) => Alert.alert("Location Error", error),
       });
       setTracking(true);
-      fetchAssignment();
+      await fetchAssignment();
       Alert.alert("Success", "Trip started. Location tracking is active.");
-    } catch (error) {
-      Alert.alert("Error", "Failed to start trip");
+      console.log("Trip started");
+    } catch (error: any) {
+      console.log("Failed to start trip:", error);
+
+      Alert.alert(
+        "Error",
+        error?.response?.data?.title ||
+          error?.response?.data ||
+          error?.message ||
+          "Failed to start trip",
+      );
     } finally {
       setUpdatingStatus(false);
     }
@@ -123,15 +133,23 @@ export default function AssignmentDetailScreen() {
           setUpdatingStatus(true);
           try {
             await stopLocationTracking();
-            await apiClient.put(`/assignments/${assignment.id}`, {
-              status: "Completed",
-            });
+            // await apiClient.put(`/assignments/${assignment.id}`, {
+            //   status: "Completed",
+            // });
             setTracking(false);
-            fetchAssignment();
+            await fetchAssignment();
             Alert.alert("Success", "Trip ended. Thank you for your service!");
             router.back();
-          } catch (error) {
-            Alert.alert("Error", "Failed to end trip");
+          } catch (error: any) {
+            console.log("Failed to end trip:", error);
+
+            Alert.alert(
+              "Error",
+              error?.response?.data?.title ||
+                error?.response?.data ||
+                error?.message ||
+                "Failed to end trip",
+            );
           } finally {
             setUpdatingStatus(false);
           }
@@ -142,18 +160,24 @@ export default function AssignmentDetailScreen() {
 
   const handleUpdateSlotStatus = async (slotId: number, status: string) => {
     try {
-      const now = new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      const now = new Date().toTimeString().split(" ")[0];
       await apiClient.put(`/assignments/${assignment?.id}/slots/${slotId}`, {
         status: status,
         actualStartTime: status === "InProgress" ? now : undefined,
         actualEndTime: status === "Completed" ? now : undefined,
       });
-      fetchAssignment();
-    } catch (error) {
-      Alert.alert("Error", "Failed to update slot status");
+      await fetchAssignment();
+      console.log("Slot updated");
+    } catch (error: any) {
+      console.log("Slot update error:", error);
+
+      Alert.alert(
+        "Error",
+        error?.response?.data?.title ||
+          error?.response?.data ||
+          error?.message ||
+          "Failed to update slot status",
+      );
     }
   };
 
@@ -190,10 +214,9 @@ export default function AssignmentDetailScreen() {
     );
   }
 
-  const canStartTrip = assignment.status === "Scheduled";
-  const canEndTrip =
-    assignment.status === "InProgress" ||
-    assignment.status === "PartiallyCompleted";
+  const canStartTrip = !tracking;
+
+  const canEndTrip = tracking;
 
   return (
     <ScrollView className="flex-1 bg-white dark:bg-black">
@@ -289,24 +312,31 @@ export default function AssignmentDetailScreen() {
 
               {tracking && (isCurrentSlot || isNextSlot) && (
                 <View className="flex-row gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <TouchableOpacity
-                    className="flex-1 bg-yellow-500 rounded-lg py-2"
-                    onPress={() =>
-                      handleUpdateSlotStatus(slot.id, "InProgress")
-                    }
-                  >
-                    <Text className="text-white text-center text-sm">
-                      Start Slot
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    className="flex-1 bg-green-600 rounded-lg py-2"
-                    onPress={() => handleUpdateSlotStatus(slot.id, "Completed")}
-                  >
-                    <Text className="text-white text-center text-sm">
-                      Complete Slot
-                    </Text>
-                  </TouchableOpacity>
+                  {slot.status === "Scheduled" && (
+                    <TouchableOpacity
+                      className="flex-1 bg-yellow-500 rounded-lg py-2"
+                      onPress={() =>
+                        handleUpdateSlotStatus(slot.id, "InProgress")
+                      }
+                    >
+                      <Text className="text-white text-center text-sm">
+                        Start Slot
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {slot.status === "InProgress" && (
+                    <TouchableOpacity
+                      className="flex-1 bg-green-600 rounded-lg py-2"
+                      onPress={() =>
+                        handleUpdateSlotStatus(slot.id, "Completed")
+                      }
+                    >
+                      <Text className="text-white text-center text-sm">
+                        Complete Slot
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               )}
             </View>
