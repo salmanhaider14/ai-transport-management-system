@@ -5,6 +5,7 @@ using API.Features.BusAssignment;
 using API.Features.Dashboard;
 using API.Features.Driver;
 using API.Features.Identity;
+using API.Features.Location;
 using API.Features.Routes;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -62,6 +63,7 @@ app.MapDriverEndpoints();
 app.MapBusAssignmentEndpoints();
 app.MapTimeSlotEndpoints();
 app.MapDashboardEndpoints();
+app.MapLocationEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

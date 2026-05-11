@@ -1,5 +1,6 @@
 import { apiClient } from "@/api/client";
 import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -9,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
 interface Assignment {
   id: number;
   busNumber: string;
@@ -29,14 +29,16 @@ export default function DriverHomeScreen() {
   const fetchData = useCallback(async () => {
     try {
       // Get user info
-      const userInfo = await apiClient.get<{ email: string; roles: string[] }>(
-        "/auth/manage/info",
-      );
+      const userInfo: any = await apiClient.get<{
+        email: string;
+        roles: string[];
+      }>("/auth/manage/info");
       setUserName(userInfo.email.split("@")[0]);
 
-      // Get driver profile
-      const drivers = await apiClient.get<{ id: number }[]>("/drivers");
-      const driverId = drivers[0]?.id;
+      const drivers =
+        await apiClient.get<{ id: number; userId: string }[]>("/drivers");
+      const currentDriver = drivers.find((d) => d.userId === userInfo.userId);
+      const driverId = currentDriver?.id;
 
       if (driverId) {
         // Get today's assignments
@@ -148,7 +150,12 @@ export default function DriverHomeScreen() {
                     {item.lastSlotEnd?.slice(0, 5)}
                   </Text>
                 </View>
-                <TouchableOpacity className="bg-green-600 px-4 py-1 rounded-lg">
+                <TouchableOpacity
+                  onPress={() =>
+                    router.push(`/(driver)/driver/assignment/${item.id}` as any)
+                  }
+                  className="bg-green-600 px-3 py-1 rounded-lg"
+                >
                   <Text className="text-white text-sm">View Details</Text>
                 </TouchableOpacity>
               </View>
