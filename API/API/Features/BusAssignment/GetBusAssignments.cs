@@ -70,5 +70,5 @@ public static class GetBusAssignments
     internal static void MapGetBusAssignments(this IEndpointRouteBuilder app) =>
         app.MapGet("/", Handler)
             .WithSummary("Get bus assignments with filters")
-            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin, AppRoles.Driver));
+            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin, AppRoles.Driver, AppRoles.Student));
 }

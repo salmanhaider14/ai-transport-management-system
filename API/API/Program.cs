@@ -7,6 +7,7 @@ using API.Features.Driver;
 using API.Features.Identity;
 using API.Features.Location;
 using API.Features.Routes;
+using API.Features.Student;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +65,7 @@ app.MapBusAssignmentEndpoints();
 app.MapTimeSlotEndpoints();
 app.MapDashboardEndpoints();
 app.MapLocationEndpoints();
+app.MapStudentEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -71,7 +73,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
-app.UseCors("ReactApp");
+app.UseCors("Development");
 //app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

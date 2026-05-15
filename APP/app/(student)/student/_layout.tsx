@@ -1,4 +1,3 @@
-// app/(student)/_layout.tsx
 import { MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
@@ -8,7 +7,7 @@ export default function StudentLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#0a7ea4",
+        tabBarActiveTintColor: "#16a34a",
         tabBarInactiveTintColor: "#687076",
         tabBarStyle: Platform.select({
           ios: { backgroundColor: "white" },
@@ -20,9 +19,27 @@ export default function StudentLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Today",
+          title: "Track",
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="today" size={size} color={color} />
+            <MaterialIcons name="map" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="schedule"
+        options={{
+          title: "Schedule",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="calendar-today" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="routes"
+        options={{
+          title: "Routes",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="directions-bus" size={size} color={color} />
           ),
         }}
       />

@@ -3,6 +3,7 @@ import {
 	BusIcon,
 	ClipboardTextIcon,
 	RoadHorizonIcon,
+	StudentIcon,
 	UserCheckIcon,
 	UserRectangleIcon,
 } from "@phosphor-icons/react/dist/ssr";
@@ -25,4 +26,5 @@ export const navIcons = {
 	"user-rectangle": UserRectangleIcon,
 	"clipboard-text": ClipboardTextIcon,
 	"user-check": UserCheckIcon,
+	student: StudentIcon,
 } as Record<string, Icon>;

@@ -1,4 +1,5 @@
 import { apiClient } from "@/api/client";
+import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 
@@ -29,14 +30,17 @@ export default function StudentProfileScreen() {
         <Text className="text-green-100 mt-1">Student Account</Text>
       </View>
 
-      {/* Theme Toggle Placeholder */}
       <View className="p-4">
+        {/* Student Info Placeholder */}
         <View className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 mb-4">
-          <Text className="text-gray-900 dark:text-white font-semibold mb-2">
-            Theme Switching
-          </Text>
+          <View className="flex-row items-center mb-3">
+            <MaterialIcons name="person" size={24} color="#16a34a" />
+            <Text className="text-lg font-semibold text-gray-900 dark:text-white ml-2">
+              Account Information
+            </Text>
+          </View>
           <Text className="text-gray-500 dark:text-gray-400 text-sm">
-            Use the dev panel to switch themes (light/dark/system)
+            Student profile details will appear here after API integration
           </Text>
         </View>
 

@@ -8,7 +8,7 @@ public static class BusAssignmentEndpoints
     {
         var group = app.MapGroup("/assignments")
             .WithTags("Bus Assignments")
-            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin, AppRoles.Driver));
+            .RequireAuthorization(p => p.RequireRole(AppRoles.Admin, AppRoles.Driver, AppRoles.Student));
 
         group.MapCreateBusAssignment();
         group.MapGetBusAssignment();

@@ -16,6 +16,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<BusAssignment> BusAssignments => Set<BusAssignment>();
     public DbSet<TimeSlot> TimeSlots => Set<TimeSlot>(); // Add this line
     public DbSet<LocationUpdate> LocationUpdates => Set<LocationUpdate>();
+    public DbSet<StudentProfile> StudentProfiles => Set<StudentProfile>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
