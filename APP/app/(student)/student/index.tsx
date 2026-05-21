@@ -1,4 +1,5 @@
 import { apiClient } from "@/api/client";
+import ChatBot from "@/components/Chatbox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -24,6 +25,7 @@ interface ActiveBus {
   speedKph: number | null;
   lastUpdate: string;
   currentStatus: string;
+  etaText?: string;
 }
 
 const DEFAULT_LAT = 31.5097;
@@ -36,6 +38,8 @@ export default function StudentTrackScreen() {
 
   const [selectedBus, setSelectedBus] = useState<ActiveBus | null>(null);
   const [showMapModal, setShowMapModal] = useState(false);
+
+  const [chatVisible, setChatVisible] = useState(false);
 
   const webViewRef = useRef<WebView>(null);
   const busImage = Asset.fromModule(require("@/assets/images/bus.png")).uri;
@@ -229,6 +233,16 @@ export default function StudentTrackScreen() {
           {buses.length !== 1 ? "es" : ""}
         </Text>
       </View>
+      {/* Floating Chat Button */}
+      <TouchableOpacity
+        onPress={() => setChatVisible(true)}
+        className="absolute bottom-6 right-6 w-14 h-14 bg-green-600 rounded-full items-center justify-center shadow-lg z-10"
+        style={{ elevation: 5 }}
+      >
+        <MaterialIcons name="chat" size={28} color="white" />
+      </TouchableOpacity>
+      {/* Chat Modal */}
+      <ChatBot visible={chatVisible} onClose={() => setChatVisible(false)} />
 
       {/* Bus List */}
       <ScrollView
@@ -366,7 +380,6 @@ export default function StudentTrackScreen() {
                     {selectedBus.currentStatus}
                   </Text>
                 </View>
-
                 <View>
                   <Text className="text-gray-500 dark:text-gray-400">
                     Speed
@@ -378,7 +391,15 @@ export default function StudentTrackScreen() {
                       : "N/A"}
                   </Text>
                 </View>
-
+                // In the bottom info section, add this between Speed and
+                Updated:
+                <View>
+                  <Text className="text-gray-500 dark:text-gray-400">ETA</Text>
+                  <Text className="text-green-600 font-bold text-lg">
+                    {selectedBus.etaText ||
+                      (selectedBus.speedKph ? "Calculating..." : "N/A")}
+                  </Text>
+                </View>
                 <View>
                   <Text className="text-gray-500 dark:text-gray-400">
                     Updated

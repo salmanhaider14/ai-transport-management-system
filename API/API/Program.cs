@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using API.Data;
 using API.Features.Bus;
 using API.Features.BusAssignment;
+using API.Features.Chat;
 using API.Features.Dashboard;
 using API.Features.Driver;
 using API.Features.Identity;
@@ -66,6 +67,7 @@ app.MapTimeSlotEndpoints();
 app.MapDashboardEndpoints();
 app.MapLocationEndpoints();
 app.MapStudentEndpoints();
+app.MapChatEndpoint();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

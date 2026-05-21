@@ -8,6 +8,8 @@ bin/
 obj/
 *.user
 *.suo
+appsettings.Development.json
+appsettings.json
 
 # Env files
 .env

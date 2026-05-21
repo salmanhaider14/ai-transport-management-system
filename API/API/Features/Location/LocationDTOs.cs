@@ -37,5 +37,7 @@ public record BusLocationResponse(
     double Longitude,
     double? SpeedKph,
     DateTime LastUpdate,
-    string Status
+    string Status,
+    double? EtaMinutes = null,
+    string? EtaText = null
 );
