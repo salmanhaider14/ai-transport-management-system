@@ -1,19 +1,40 @@
-# AI Powered Transport Management System
+# 🚍 University Transport Management System
 
-A full-stack transport management solution built for University of Lahore,
-featuring real-time bus tracking, AI-assisted queries, and role-based dashboards.
+A full-stack transport management platform with real-time GPS tracking, ETA predictions, AI Chatbot, role-based access, and cross-platform mobile apps for drivers and students.
 
-## Tech Stack
-- ASP.NET Core (Backend)
-- PostgreSQL
-- React + Vite (Web)
-- React Native (Mobile – Planned)
-- SignalR (Realtime)
-- OpenAI API (AI Assistant)
+---
 
-## Repository Structure
-- /backend – API & business logic
-- /web – Admin dashboard
-- /mobile – Student mobile app
-- /shared – Shared contracts & constants
-- /docs – Architecture & FYP documentation
+## 📌 Features
+
+- **Role‑Based Access** – Admin dashboard, driver app, student app with distinct permissions.
+- **Bus & Route Management** – CRUD operations for buses, routes, and stops.
+- **Driver & Student Management** – Create accounts with Identity, manage profiles, attendance, and assignments.
+- **Assignment Scheduling** – Schedule buses to routes with multiple time slots per day.
+- **Real‑Time GPS Tracking** – Drivers report location every 15 seconds; students see live bus positions on an interactive map.
+- **AI‑Powered ETA** – Prediction model using distance and real‑time speed (85% accuracy; TensorFlow integration planned).
+- **AI Chatbot** – Students can ask natural language questions about bus schedules, routes, and real-time bus locations using Google Gemini.
+- **Driver Attendance** – Mark check‑in/out, track daily status (Present/Late/Absent/OnLeave).
+- **Dashboard Analytics** – Charts for weekly assignments, bus utilization, and upcoming schedules.
+
+---
+
+## 🧰 Tech Stack
+
+| Layer          | Technologies                                                                 |
+|----------------|------------------------------------------------------------------------------|
+| Backend API    | .NET Core, ASP.NET Core Identity, Entity Framework Core, PostgreSQL            |
+| Frontend (Web) | React 18, TypeScript, Material UI, React Hook Form, Zod, ApexCharts         |
+| Mobile         | React Native (Expo), TailwindCSS (NativeWind), Leaflet (map via WebView)    |
+| Real‑Time      | REST with auto‑refresh (15s intervals) – WebSockets planned                 |
+| DevOps         | Docker, Git, GitHub Actions (planned)                                       |
+| AI             | Google Gemini API                                                               |
+
+---
+
+## 🏗️ Architecture
+
+- **Backend** – Minimal APIs with feature slices, FluentValidation, JWT/cookie auth.
+- **Database** – PostgreSQL with indexes for location history and assignment queries.
+- **Caching** – Redis (planned) for active bus locations.
+- **Mobile** – Driver app auto‑reports location; student app displays live buses on list/map.
+- **Admin Dashboard** – Full CRUD for buses, routes, drivers, students, assignments, attendance.
