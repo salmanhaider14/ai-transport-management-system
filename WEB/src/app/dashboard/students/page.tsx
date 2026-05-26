@@ -18,6 +18,7 @@ import {
 	DialogTitle,
 	Divider,
 	FormControl,
+	FormControlLabel,
 	IconButton,
 	InputLabel,
 	MenuItem,
@@ -162,7 +163,7 @@ export default function StudentsPage() {
 		setSubmitting(true);
 		try {
 			const result = await studentsApi.create(data as CreateStudentRequest);
-			setGeneratedPassword(result.temporaryPassword || null);
+			//setGeneratedPassword(result.temporaryPassword || null);
 			setCreateDialogOpen(false);
 			fetchStudents();
 			setTimeout(() => setGeneratedPassword(null), 5000);

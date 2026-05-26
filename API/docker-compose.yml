@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:17
+    container_name: tms_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tmsdb
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: abc123
+    ports:
+      - "5432:5432" # expose to host so Rider/pgAdmin still works
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d tmsdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: . # solution root — Docker sees the whole folder
+      dockerfile: API/Dockerfile
+    container_name: tms_api
+    restart: unless-stopped
+    ports:
+      - "8080:8080" # browse at http://localhost:8080/scalar
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__AppDb: "Host=db;Port=5432;Database=tmsdb;Username=root;Password=abc123;"
+      Gemini__ApiKey: ${GEMINI_API_KEY}
+    depends_on:
+      db:
+        condition: service_healthy # waits for postgres to be ready
+
+volumes:
+  postgres_data:

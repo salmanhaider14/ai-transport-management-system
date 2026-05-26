@@ -26,13 +26,13 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { PencilSimple, Plus, TrashSimple } from "@phosphor-icons/react";
 import { Controller, useForm } from "react-hook-form";
 import { z as zod } from "zod";
 
 import { config } from "@/config";
 import { Bus, busesApi, CreateBusRequest, UpdateBusRequest } from "@/lib/api/buses";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@/components/core/data-grid";
 
 const busSchema = zod.object({
 	busNumber: zod.string().min(1, "Bus number is required").max(20, "Maximum 20 characters"),

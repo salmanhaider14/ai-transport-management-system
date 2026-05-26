@@ -1,0 +1,10 @@
+**/.idea
+**/.vs
+**/bin
+**/obj
+**/*.user
+**/node_modules
+.git
+.gitignore
+**/Dockerfile
+docker-compose*.yml

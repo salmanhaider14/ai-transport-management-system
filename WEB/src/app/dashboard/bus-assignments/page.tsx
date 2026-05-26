@@ -34,7 +34,6 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Calendar, Eye, PencilSimple, Plus, TrashSimple, X } from "@phosphor-icons/react";
 import dayjs from "dayjs";
@@ -55,6 +54,7 @@ import {
 import { Bus, busesApi } from "@/lib/api/buses";
 import { DriverProfile, driversApi } from "@/lib/api/drivers";
 import { Route, routesApi } from "@/lib/api/routes";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@/components/core/data-grid";
 
 const timeSlotSchema = zod
 	.object({

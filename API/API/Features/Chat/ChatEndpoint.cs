@@ -132,6 +132,12 @@ Your answer:";
         
         // Parse response
         using var doc = JsonDocument.Parse(jsonResponse);
+        // Check for API error first
+if (doc.RootElement.TryGetProperty("error", out var error))
+{
+    var errorMessage = error.GetProperty("message").GetString();
+    throw new Exception($"Gemini API error: {errorMessage}");
+}
         var reply = doc.RootElement
             .GetProperty("candidates")[0]
             .GetProperty("content")
