@@ -177,7 +177,18 @@ export default function BusesPage() {
 				<CardHeader
 					title="Buses"
 					action={
-						<Button variant="contained" startIcon={<Plus fontSize={18} />} onClick={handleOpenCreate}>
+						<Button
+							variant="contained"
+							startIcon={<Plus fontSize={18} />}
+							onClick={handleOpenCreate}
+							sx={{
+								backgroundColor: "#0d3b26",
+								color: "#ffffff",
+								"&:hover": {
+									backgroundColor: "#135436",
+								},
+							}}
+						>
 							Add Bus
 						</Button>
 					}
